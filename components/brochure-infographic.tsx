@@ -573,7 +573,7 @@ export default function BrochureInfographic() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={headerInView ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 0.65, delay: 0.08 }}
-                        className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5 text-black leading-[1.05]"
+                        className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5 text-white leading-[1.05]"
                     >
                         Every Service.
                         <br />
@@ -606,7 +606,7 @@ export default function BrochureInfographic() {
                             { value: 100, suffix: "+", label: "Global Clients" },
                         ].map((s) => (
                             <div key={s.label} className="text-center">
-                                <div className="text-3xl font-black text-black">
+                                <div className="text-3xl font-black text-white">
                                     <Counter value={s.value} suffix={s.suffix} />
                                 </div>
                                 <div className="text-xs text-slate-400 uppercase tracking-wider mt-1 font-medium">

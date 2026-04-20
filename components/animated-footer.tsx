@@ -206,7 +206,7 @@ export default function AnimatedFooter() {
         >
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 text-center sm:text-left">
             <p className="text-gray-500 text-sm">
-              © {new Date().getFullYear()} Motion Records LLC. All rights reserved.
+              © {new Date().getFullYear()} ZAPWMS LLP. All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
               <Link href="#" className="text-gray-500 hover:text-white transition-colors">
