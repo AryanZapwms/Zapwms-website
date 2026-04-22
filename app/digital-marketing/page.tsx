@@ -1,17 +1,18 @@
-// app/page.tsx
+"use client";
+
+import { useEffect } from "react";
 import BackgroundStripes from "@/components/background-stripes";
 import AnimatedBackground from "@/components/animated-background";
 import Navbar from "@/components/navbar";
-import Hero from "@/components/hero";
-import HowWeWork from "@/components/how-we-work";
-import InnovativeServices from "@/components/innovative-services";
-import ServicesPreview from "@/components/services-preview-home";
-
 import AnimatedFooter from "@/components/animated-footer";
 import BackgroundPaths from "@/components/background-paths";
-import BrochureInfographic from "../components/brochure-infographic";
+import DigitalMarketingPage from "@/components/digital-marketing-page";
 
-export default function Home() {
+export default function DigitalMarketing() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="relative min-h-screen bg-black">
       <BackgroundPaths />
@@ -20,12 +21,7 @@ export default function Home() {
 
       <div className="relative z-10">
         <Navbar />
-        <Hero />
-        <HowWeWork />
-        <InnovativeServices />
-        <ServicesPreview />
-        <BrochureInfographic />
-
+        <DigitalMarketingPage />
         <AnimatedFooter />
       </div>
     </div>
