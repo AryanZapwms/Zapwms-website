@@ -248,7 +248,7 @@ const services = [
   },
 ];
 
-/* ================= SCROLL STACK (React Bits style) ================= */
+/* ================= SCROLL STACK (React Bits style, stacking from the top) ================= */
 function ScrollStack({
   items,
   onCardClick,
@@ -257,7 +257,7 @@ function ScrollStack({
   onCardClick: (service: any) => void;
 }) {
   return (
-    <div className="relative">
+    <div className="relative mt-20">
       {items.map((item, index) => (
         <ScrollStackCard
           key={index}
@@ -265,8 +265,11 @@ function ScrollStack({
           index={index}
           total={items.length}
           onClick={() => onCardClick(item.content)}
+         
         />
       ))}
+      {/* Spacer so all cards can scroll past */}
+      <div className="h-screen " />
     </div>
   );
 }
@@ -288,26 +291,30 @@ function ScrollStackCard({
     offset: ["start end", "end start"],
   });
 
-  const topOffset = index * 8;
+  // Later cards stick higher up (lower top) and have higher z-index
+  const topValue = `max(5vh, calc(20vh - ${index * 16}px))`;
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.95]);
   const opacity = useTransform(scrollYProgress, [0, 0.3, 1], [0.6, 1, 0.6]);
 
   return (
     <motion.div
-      ref={cardRef}
-      style={{
-        position: "sticky",
-        top: `calc(15vh + ${topOffset}px)`,
-        scale,
-        opacity,
-        zIndex: total - index,
-      }}
-      className="w-full max-w-2xl mx-auto p-6 border border-gray-800 rounded-2xl bg-white  text-black cursor-pointer hover:border-yellow-400  mb-4"
-      onClick={onClick}
-    >
-      <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-      <p className="text-black">{item.description}</p>
-    </motion.div>
+  ref={cardRef}
+  style={{
+    position: "sticky",
+    top: topValue,
+    scale,
+    opacity: 9,                // no fade, always fully opaque
+    zIndex: index + 1,
+    marginTop: index === 0 ? 0 : "1px",
+    
+  }}
+  className="w-full max-w-2xl mx-auto p-6 border border-gray-800 rounded-2xl 
+             bg-white text-black cursor-pointer hover:border-yellow-400 transition-colors  "
+  onClick={onClick}
+>
+  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+  <p className="text-black">{item.description}</p>
+</motion.div>
   );
 }
 
