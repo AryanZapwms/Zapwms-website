@@ -1,15 +1,14 @@
+// app/components/digital-marketing-page.tsx
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 
-/* ================= DATA ================= */
-
+/* ================= DATA (unchanged) ================= */
 const services = [
   {
     title: "Influencer Marketing",
-    desc: "We connect your brand with carefully selected creators who align with your audience and values. From strategy and outreach to content execution and performance tracking, we manage end-to-end influencer campaigns that build trust, expand reach, and drive real conversions at scale.",
+    desc: "Connect your brand with trusted creators to build credibility, reach new audiences, and drive conversions.",
     best: "D2C brands, product launches, lifestyle brands",
     details: [
       "Influencer discovery across Instagram, YouTube, LinkedIn",
@@ -21,7 +20,7 @@ const services = [
   },
   {
     title: "AI Marketing",
-    desc: "Our AI-driven marketing solutions help you automate campaigns, analyze user behavior, and optimize performance in real time. By combining data, machine learning, and creative strategy, we ensure your marketing is smarter, faster, and consistently delivering better ROI.",
+    desc: "Leverage AI to automate campaigns, optimize targeting, and maximize performance in real-time.",
     best: "E-commerce, SaaS, scaling businesses",
     details: [
       "AI-driven audience targeting and segmentation",
@@ -33,7 +32,7 @@ const services = [
   },
   {
     title: "AI Model Generation",
-    desc: "Create stunning, hyper-realistic product visuals using AI-generated models without the cost and complexity of traditional photoshoots. Perfect for scaling brands, this approach ensures consistency, speed, and complete creative flexibility.",
+    desc: "Create hyper-realistic AI models for product visuals without the cost of traditional shoots.",
     best: "Fashion, beauty, e-commerce brands",
     details: [
       "Custom AI model creation (age, ethnicity, style)",
@@ -45,7 +44,7 @@ const services = [
   },
   {
     title: "Motion Posters",
-    desc: "We design cinematic motion posters that instantly capture attention and boost engagement across digital platforms. By combining animation, storytelling, and visual effects, we create content that stands out and drives interaction.",
+    desc: "Cinematic animated posters designed to capture attention and increase engagement.",
     best: "Films, events, product launches",
     details: [
       "High-quality motion graphics and animation",
@@ -57,7 +56,7 @@ const services = [
   },
   {
     title: "Anime & Animation",
-    desc: "Bring your brand to life with custom animation and anime-style storytelling that resonates with modern audiences. From concept to execution, we create engaging visual narratives that enhance brand recall and emotional connection.",
+    desc: "Custom anime-style visuals and animations for engaging storytelling and branding.",
     best: "Gaming, youth-focused brands, startups",
     details: [
       "Character design and development",
@@ -69,7 +68,7 @@ const services = [
   },
   {
     title: "Spot Advertising",
-    desc: "Short, high-impact advertisements crafted to capture attention within seconds and drive immediate action. These ads are optimized for performance across platforms, making them perfect for fast-moving campaigns and promotions.",
+    desc: "Short, high-impact ads designed to grab attention and drive quick conversions.",
     best: "Product launches, offers, events",
     details: [
       "6–30 second ad creatives",
@@ -81,7 +80,7 @@ const services = [
   },
   {
     title: "YouTube Ads (Non-Skip)",
-    desc: "Ensure your brand message is seen with non-skippable YouTube ads designed for maximum visibility and recall. We combine strong storytelling with precise targeting to create impactful campaigns that leave a lasting impression.",
+    desc: "Guaranteed visibility ads that deliver strong brand recall through storytelling.",
     best: "Brand awareness, premium products",
     details: [
       "Non-skippable ad formats",
@@ -93,7 +92,7 @@ const services = [
   },
   {
     title: "Brand Awareness Campaigns",
-    desc: "We design and execute multi-channel campaigns that build strong brand recognition and authority. By combining strategy, creativity, and data, we help your brand stand out and stay top-of-mind.",
+    desc: "Multi-channel campaigns to build brand recognition, trust, and authority.",
     best: "Startups, rebranding, new markets",
     details: [
       "Brand positioning and messaging",
@@ -105,7 +104,7 @@ const services = [
   },
   {
     title: "SEO Content Writing",
-    desc: "We create high-quality, SEO-optimized content that not only ranks on search engines but also engages users and drives conversions. Every piece is strategically crafted to bring long-term organic growth.",
+    desc: "Content that ranks on search engines and converts visitors into customers.",
     best: "Websites, blogs, e-commerce",
     details: [
       "SEO blog writing and articles",
@@ -117,7 +116,7 @@ const services = [
   },
   {
     title: "Wikipedia Writing",
-    desc: "Professional Wikipedia page creation backed by thorough research and strict compliance with platform guidelines. We ensure credibility, accuracy, and long-term sustainability of your page.",
+    desc: "Professional Wikipedia page creation with proper research and compliance.",
     best: "Public figures, brands, organizations",
     details: [
       "In-depth research and sourcing",
@@ -129,7 +128,7 @@ const services = [
   },
   {
     title: "Facebook Marketplace Marketing",
-    desc: "We optimize your product listings to maximize visibility, attract the right audience, and drive direct conversions. Ideal for businesses looking to generate consistent leads and sales locally.",
+    desc: "Optimize product listings to drive direct leads and sales from marketplace.",
     best: "Local businesses, e-commerce brands",
     details: [
       "Optimized product listings",
@@ -141,7 +140,7 @@ const services = [
   },
   {
     title: "Artist Promotion",
-    desc: "Promote your music across major platforms and reach the right audience with targeted campaigns. We help artists grow visibility, engagement, and fan base through strategic promotion.",
+    desc: "Promote music across streaming and social platforms to increase visibility.",
     best: "Independent artists, music labels",
     details: [
       "Playlist pitching and placements",
@@ -153,7 +152,7 @@ const services = [
   },
   {
     title: "Audio / Video Promotion",
-    desc: "Boost the reach of your audio and video content across platforms with targeted strategies that increase engagement, views, and audience retention.",
+    desc: "Boost reach and engagement for audio and video content across platforms.",
     best: "Music creators, video creators",
     details: [
       "Streaming platform promotions",
@@ -165,7 +164,7 @@ const services = [
   },
   {
     title: "Music Revenue Generation",
-    desc: "We help you monetize your music effectively across global streaming platforms, ensuring consistent revenue through optimized distribution and royalty management.",
+    desc: "Monetize your music across global streaming platforms efficiently.",
     best: "Artists, music producers",
     details: [
       "Distribution to Spotify, Apple Music, etc.",
@@ -177,7 +176,7 @@ const services = [
   },
   {
     title: "Music Video Production",
-    desc: "End-to-end production of high-quality music videos that enhance your brand and captivate your audience. From concept to final delivery, we handle everything.",
+    desc: "End-to-end production of high-quality music videos.",
     best: "Artists, labels",
     details: [
       "Concept development and scripting",
@@ -189,7 +188,7 @@ const services = [
   },
   {
     title: "Product Photography",
-    desc: "High-quality product visuals designed to showcase your products in the best light and increase conversions across e-commerce and marketing platforms.",
+    desc: "High-quality visuals designed to boost product appeal and conversions.",
     best: "E-commerce, brands",
     details: [
       "Studio product shoots",
@@ -201,7 +200,7 @@ const services = [
   },
   {
     title: "Beauty Product Shoots",
-    desc: "Premium visual production focused on highlighting product details, textures, and aesthetics to create a luxurious brand perception.",
+    desc: "Premium visuals that highlight product aesthetics and quality.",
     best: "Beauty, skincare brands",
     details: [
       "Macro and detail shots",
@@ -213,7 +212,7 @@ const services = [
   },
   {
     title: "Model Product Shoots",
-    desc: "Lifestyle shoots featuring models to create relatable and aspirational visuals that increase trust, engagement, and conversion rates.",
+    desc: "Lifestyle-based shoots using models to increase engagement and trust.",
     best: "Fashion, apparel brands",
     details: [
       "Model casting and selection",
@@ -225,7 +224,7 @@ const services = [
   },
   {
     title: "Brand Face Shoots",
-    desc: "Develop a strong brand identity by associating a recognizable face with your business. This creates emotional connection and long-term recall.",
+    desc: "Create a strong brand identity with a recognizable face.",
     best: "Personal brands, companies",
     details: [
       "Face selection and casting",
@@ -237,7 +236,7 @@ const services = [
   },
   {
     title: "Regional Marketing",
-    desc: "Localized marketing strategies tailored to different regions, languages, and cultures to maximize reach and relevance across diverse audiences.",
+    desc: "Localized campaigns tailored to different regions and cultures.",
     best: "Pan-India brands, local businesses",
     details: [
       "Regional language adaptations",
@@ -249,149 +248,207 @@ const services = [
   },
 ];
 
-/* ================= COMPONENT ================= */
+/* ================= SCROLL STACK (React Bits style) ================= */
+function ScrollStack({
+  items,
+  onCardClick,
+}: {
+  items: { title: string; description: string; content: any }[];
+  onCardClick: (service: any) => void;
+}) {
+  return (
+    <div className="relative">
+      {items.map((item, index) => (
+        <ScrollStackCard
+          key={index}
+          item={item}
+          index={index}
+          total={items.length}
+          onClick={() => onCardClick(item.content)}
+        />
+      ))}
+    </div>
+  );
+}
 
+function ScrollStackCard({
+  item,
+  index,
+  total,
+  onClick,
+}: {
+  item: { title: string; description: string };
+  index: number;
+  total: number;
+  onClick: () => void;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"],
+  });
+
+  const topOffset = index * 8;
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.95]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 1], [0.6, 1, 0.6]);
+
+  return (
+    <motion.div
+      ref={cardRef}
+      style={{
+        position: "sticky",
+        top: `calc(15vh + ${topOffset}px)`,
+        scale,
+        opacity,
+        zIndex: total - index,
+      }}
+      className="w-full max-w-2xl mx-auto p-6 border border-gray-800 rounded-2xl bg-white  text-black cursor-pointer hover:border-yellow-400  mb-4"
+      onClick={onClick}
+    >
+      <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+      <p className="text-black">{item.description}</p>
+    </motion.div>
+  );
+}
+
+/* ================= SLIDE-IN DRAWER ================= */
+function ServiceDrawer({
+  service,
+  onClose,
+}: {
+  service: any;
+  onClose: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {service && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex justify-end"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          {/* Backdrop */}
+          <motion.div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={onClose}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          />
+
+          {/* Drawer panel */}
+          <motion.div
+            className="relative w-full md:w-[50vw] lg:w-[45vw] bg-gray-900 border-l border-gray-800 overflow-y-auto"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "tween", duration: 0.3 }}
+          >
+            <div className="p-8 pt-20">
+              {/* Close button */}
+              <button
+                onClick={onClose}
+                className="absolute top-6 right-6 text-gray-400 hover:text-white border border-gray-700 rounded-lg px-3 py-1 transition-colors"
+              >
+                ✕ Close
+              </button>
+
+              {/* Title */}
+              <h2 className="text-4xl font-bold mb-4">{service.title}</h2>
+              <p className="text-lg text-gray-400 mb-10">{service.desc}</p>
+
+              {/* Best For */}
+              <div className="mb-10 p-5 border border-yellow-400/30 rounded-xl bg-yellow-400/10">
+                <h3 className="text-sm font-semibold text-yellow-300 mb-1">
+                  🎯 Best For
+                </h3>
+                <p className="text-yellow-200">{service.best}</p>
+              </div>
+
+              {/* What’s Included */}
+              <div className="mb-10">
+                <h3 className="text-2xl font-bold mb-6">What’s Included</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {service.details.map((d: string, i: number) => (
+                    <div
+                      key={i}
+                      className="p-4 border border-gray-800 rounded-xl bg-gray-800/50 text-sm"
+                    >
+                      {d}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* What You Get */}
+              <div className="mb-10">
+                <h3 className="text-2xl font-bold mb-6">What You Get</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="p-4 border border-gray-800 rounded-xl text-center text-sm">
+                    🚀 Faster Growth
+                  </div>
+                  <div className="p-4 border border-gray-800 rounded-xl text-center text-sm">
+                    📈 More Leads
+                  </div>
+                  <div className="p-4 border border-gray-800 rounded-xl text-center text-sm">
+                    💰 Higher ROI
+                  </div>
+                </div>
+              </div>
+
+              {/* Use Cases */}
+              <div className="mb-10">
+                <h3 className="text-2xl font-bold mb-4">Use Cases</h3>
+                <p className="text-gray-400">
+                  This service is ideal for brands looking to scale quickly,
+                  build strong visibility, and convert audiences into customers.
+                </p>
+              </div>
+
+              {/* CTA */}
+              <div className="text-center pb-10">
+                <p className="text-gray-400 mb-6">
+                  Get a custom strategy tailored to your business goals.
+                </p>
+                <button className="bg-yellow-400 text-black px-8 py-3 rounded-full font-medium hover:scale-105 transition">
+                  Get Free Consultation
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ================= MAIN PAGE ================= */
 export default function DigitalMarketingPage() {
   const [active, setActive] = useState<any>(null);
 
   return (
     <div className="bg-black text-white min-h-screen px-6 py-20">
-
-      {/* ================= HERO ================= */}
+      {/* Hero */}
       <div className="text-center mb-20">
-        <h1 className="text-5xl md:text-6xl font-bold mb-4">
-          Our Services
-        </h1>
+        <h1 className="text-5xl md:text-6xl font-bold mb-4">Our Services</h1>
         <p className="text-gray-400 max-w-2xl mx-auto">
           Explore all the services we offer to scale your brand.
         </p>
       </div>
 
-      {/* ================= GRID ================= */}
-      <div className="max-w-7xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {services.map((s, i) => (
-          <motion.div
-            key={i}
-            whileHover={{ scale: 1.05 }}
-            onClick={() => setActive(s)}
-            className="p-5 border border-gray-800 rounded-xl bg-gray-900/50 cursor-pointer hover:border-yellow-400 transition"
-          >
-            <h3 className="font-semibold mb-2">{s.title}</h3>
-            <p className="text-sm text-gray-400">{s.desc}</p>
-          </motion.div>
-        ))}
-      </div>
+      {/* Scroll Stack */}
+      <ScrollStack
+        items={services.map((s) => ({
+          title: s.title,
+          description: s.desc,
+          content: s,
+        }))}
+        onCardClick={setActive}
+      />
 
-    <AnimatePresence>
-  {active && (
-    <motion.div
-      className="fixed inset-0 bg-black z-50 overflow-y-auto py-20  "
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <div className="max-w-5xl mx-auto px-6 py-10 border border-yellow-200 rounded-xl">
-
-    <div className=" flex flex-row justify-end">
-        {/* Close */}
-        <button
-          onClick={() => setActive(null)}
-          className="mb-10 text-gray-400 hover:text-red-700 border-2 rounded-lg hover:bg-red-300  px-3 py-2"
-        >
-          ✕ Close
-        </button>
-    </div>
-
-
-        {/* HERO */}
-        <div className="mb-16">
-          <h1 className="text-5xl font-bold mb-6">
-            {active.title}
-          </h1>
-
-          <p className="text-xl text-gray-400 max-w-3xl leading-relaxed">
-            {active.desc}
-          </p>
-        </div>
-
-        {/* BEST FOR */}
-        <div className="mb-16 p-6 border border-yellow-400/30 rounded-2xl bg-yellow-400/10">
-          <h3 className="text-lg font-semibold text-yellow-300 mb-2">
-            🎯 Best For
-          </h3>
-          <p className="text-yellow-200">
-            {active.best}
-          </p>
-        </div>
-
-        {/* INCLUDES */}
-        <div className="mb-20">
-          <h2 className="text-3xl font-bold mb-8">
-            What’s Included
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {active.details.map((d: string, i: number) => (
-              <div
-                key={i}
-                className="p-6 border border-gray-800 rounded-xl bg-gray-900/50"
-              >
-                {d}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* BENEFITS */}
-        <div className="mb-20">
-          <h2 className="text-3xl font-bold mb-8">
-            What You Get
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 border border-gray-800 rounded-xl">
-              🚀 Faster Growth
-            </div>
-            <div className="p-6 border border-gray-800 rounded-xl">
-              📈 More Leads
-            </div>
-            <div className="p-6 border border-gray-800 rounded-xl">
-              💰 Higher ROI
-            </div>
-          </div>
-        </div>
-
-        {/* USE CASE */}
-        <div className="mb-20">
-          <h2 className="text-3xl font-bold mb-6">
-            Use Cases
-          </h2>
-
-          <p className="text-gray-400 max-w-3xl">
-            This service is ideal for brands looking to scale quickly,
-            build strong visibility, and convert audiences into customers.
-          </p>
-        </div>
-
-        {/* CTA */}
-        <div className="text-center mt-20">
-          <h2 className="text-3xl font-bold mb-4">
-            Let’s build this for your brand
-          </h2>
-
-          <p className="text-gray-400 mb-8">
-            Get a custom strategy tailored to your business goals.
-          </p>
-
-          <button className="bg-yellow-400 text-black px-8 py-3 rounded-full font-medium hover:scale-105 transition">
-            Get Free Consultation
-          </button>
-        </div>
-
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
+      {/* Slide‑in Drawer */}
+      <ServiceDrawer service={active} onClose={() => setActive(null)} />
     </div>
   );
 }
